@@ -1,11 +1,14 @@
 package Poker_game;
 import java.util.*;
 import java.util.stream.IntStream;
-public class Cards {
+public class CardDeck  {
 	private Stack<Card> cardDeck;
-	public Cards(){
+	private final Integer DECK_SIZE = 52;
+	public CardDeck (){
 		createDeck();
-		shuffleDeck();
+	};
+	public CardDeck (Stack<Card> cardDeckIn){
+		cardDeck = cardDeckIn;
 	};
 	public String dealCard() {
 		String nextCard = cardDeck.peek().toString();
@@ -16,7 +19,6 @@ public class Cards {
 		return cardDeck.peek().toString();
 	}
 	private void createDeck() {
-				final Integer DECK_SIZE = 52;
 				Stack<Card> deckMaker = new Stack<Card>();
 				for(Integer i= 0; i < DECK_SIZE; i++)
 					deckMaker.push(new Card(i));
@@ -26,11 +28,12 @@ public class Cards {
 	public void shuffleDeck() {
 		Collections.shuffle(cardDeck);
 	}
-	public void printAllCards() {
-		while(!cardDeck.isEmpty()) {
-			System.out.println(cardDeck.peek()+" ");
-			cardDeck.pop();
-		}
+	public Stack<Card> getDeck() {
+		return cardDeck;
+	}
+	public void checkCardDeck (int nthCard) {
+			System.out.println(cardDeck.get(nthCard)+" ");
+		
 	}
 	
 }
