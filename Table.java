@@ -4,14 +4,13 @@ public class Table {
 	//create dealer object .. now we can remove the card deck, it's held by dealer
 	public static CardDeck cardDeck = new CardDeck();
 	private static final int DEFAULT_PLAYER_COUNT = 4;
-	public static int playerCount = DEFAULT_PLAYER_COUNT;;
-	public Player [] gamePlayers;
-	
+	public static int playerCount = DEFAULT_PLAYER_COUNT;
+	private Player [] gamePlayers = new Player [0];
+	private int totalPotVal = 0; 
 	public Table(){
 		setPlayerCount(DEFAULT_PLAYER_COUNT);
 		createPlayers();
-		Dealer.shuffle(cardDeck.getDeck());
-		dealHoleCards();
+		GameLogic.determineDealer(gamePlayers);
 	}
 	
 	public Table(int playerCountIn){
@@ -20,6 +19,28 @@ public class Table {
 		dealHoleCards();
 	}
 	
+	public void startNewHand() {
+		Dealer.resetDeck(cardDeck);
+		Dealer.shuffle(cardDeck.getDeck());
+		//movedealeerchip
+		GameLogic.determineSmallBig(gamePlayers);
+		dealHoleCards();
+	}
+	public void startAntiing() {
+		GameLogic.startBetting(gamePlayers);
+	}
+	
+	public void turnBet() {
+		GameLogic.startBetting(gamePlayers);
+	}
+	
+	public void flopBet() {
+		GameLogic.startBetting(gamePlayers);
+	}
+	
+	public void riverBet() {
+		GameLogic.startBetting(gamePlayers);
+	}
 	
 	public void createPlayers() {
 		 gamePlayers = new Player[getPlayerCount()];
@@ -30,6 +51,7 @@ public class Table {
 	public Vector<String> getPlayerCards(int player) {
 		return gamePlayers[player].getHoleCards();
 	}
+	
 	public void getPlayerInfo(int player) {
 		System.out.println(gamePlayers[player].getChipCount());
 		System.out.println(gamePlayers[player].getHoleCards());
@@ -42,9 +64,12 @@ public class Table {
 		//including human player, create playerCount Player objects 
 		return playerCount;
 	}
-	public void updateCurrentPot() {}
-	public void getCurrentPot() {}
-
+	public void updateCurrentPot(int updatedChipCount){
+		totalPotVal = updatedChipCount;
+	}
+	public int getCurrentPot() {
+		return totalPotVal;
+	}
 
 	private void dealHoleCards() {
 		//deal hole cardDeck to each plyer

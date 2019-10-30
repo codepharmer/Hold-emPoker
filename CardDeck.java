@@ -33,7 +33,8 @@ public class CardDeck  {
 	}
 	public void checkCardDeck (int nthCard) {
 			System.out.println(cardDeck.get(nthCard)+" ");
-		
 	}
-	
+	public void resetDeck() {
+		createDeck();
+	}
 }

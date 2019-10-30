@@ -28,4 +28,8 @@ public class Dealer {
 	//deal flop
 	//deal turn
 	//deal river
+	public static void resetDeck(CardDeck deck) {
+		// TODO Auto-generated method stub
+		deck.resetDeck();
+	}
 }
