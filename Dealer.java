@@ -14,10 +14,10 @@ public class Dealer {
 	}
 	*/
 	//deal card returns card object
-	public static Card dealCard(Stack<Card> cardDeck) {
-		Card dealCard = cardDeck.peek();
-		cardDeck.pop();
-		return dealCard;
+	public static Card dealCard(CardDeck cardDeck) {
+		Card card = cardDeck.getDeck().peek();
+		cardDeck.getDeck().pop();
+		return card;
 	}
 	
 	public static void shuffle(Stack<Card> cardDeck) {
@@ -31,5 +31,19 @@ public class Dealer {
 	public static void resetDeck(CardDeck deck) {
 		// TODO Auto-generated method stub
 		deck.resetDeck();
+	}
+	public static Card[] dealFlop(CardDeck cardDeck) {
+		Card [] flopCards = new Card[3];
+		for(int i = 0; i < 3; i++) {
+			flopCards[i] = cardDeck.getDeck().peek();
+			cardDeck.getDeck().pop();
+		}
+		return flopCards;
+	}
+	public static Card dealTurn(CardDeck cardDeck) {
+		return dealCard(cardDeck);
+	}
+	public static Card dealRiver(CardDeck cardDeck) {
+		return dealCard(cardDeck);
 	}
 }

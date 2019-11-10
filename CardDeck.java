@@ -31,6 +31,10 @@ public class CardDeck  {
 	public Stack<Card> getDeck() {
 		return cardDeck;
 	}
+	
+	public void setDeck(Stack<Card> cardDeck) {
+		this.cardDeck = cardDeck;
+	}
 	public void checkCardDeck (int nthCard) {
 			System.out.println(cardDeck.get(nthCard)+" ");
 	}
