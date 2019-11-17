@@ -1,4 +1,4 @@
-package Poker_game;
+package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 import java.util.stream.IntStream;
 public class CardDeck  {

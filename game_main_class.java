@@ -1,5 +1,5 @@
 
-package Poker_game;
+package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class game_main_class {
 	
@@ -10,6 +10,8 @@ public class game_main_class {
 	
 	public static void main(String [] args) {
 		Table gameTable= new Table();
+		
+		
 
 		//gameTable.checkTopCard();
 		
@@ -18,8 +20,6 @@ public class game_main_class {
 		  { 
 			  Vector<String> twoCards = gameTable.getPlayerCards(i); 
 			  System.out.println(twoCards);
-		 
-		
 		/*
 		 * 
 		 * 

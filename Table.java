@@ -1,9 +1,8 @@
-package Poker_game;
+package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class Table {
-	
-	
 	public static CardDeck cardDeck = new CardDeck();
+	private Dealer dealerJoe;
 	private static final int DEFAULT_PLAYER_COUNT = 4;
 	private static final int MAX_COMMUNITY_CARDS = 5;
 	private static final int HUMAN_PLAYER_INDEX = 2;
@@ -11,12 +10,16 @@ public class Table {
 	public static Card [] communityCards = new Card[MAX_COMMUNITY_CARDS];
 	private Player [] gamePlayers = new Player [0];
 	private static int dealerIndex = 0;
-	private int totalPotVal = 0; 
-	
+	private int totalPotVal = 0;
+	private final int DEFAULT_SMALL_BLIND = 2;
+	private int smallBlind = DEFAULT_SMALL_BLIND;
+	private int bigBlind = 2 * smallBlind;
+	boolean continuePlaying = false;
 	
 	public Table(){
 		setPlayerCount(DEFAULT_PLAYER_COUNT);
 		createPlayers();
+		dealerJoe = new Dealer(cardDeck);
 		dealerIndex = GameLogic.determineDealer(gamePlayers);
 		startGame();
 	}
@@ -24,17 +27,35 @@ public class Table {
 	public Table(int playerCountIn){
 		setPlayerCount(playerCountIn);
 		createPlayers();
+		dealerJoe = new Dealer(cardDeck);
 		dealerIndex = GameLogic.determineDealer(gamePlayers);
 		startGame();
 	}
+	public int getSmallBlind() {
+		return smallBlind;
+	}
+
+	public void setSmallBlind(int smallBlind) {
+		this.smallBlind = smallBlind;
+	}
+
+	public int getBigBlind() {
+		return bigBlind;
+	}
+
+	public void setBigBlind(int bigBlind) {
+		this.bigBlind = bigBlind;
+	}
+
 	private void startGame() {
 		nextHand();
 	}
 	public void nextHand() {
-		Dealer.resetDeck(cardDeck);
-		Dealer.shuffle(cardDeck.getDeck());
+		cardDeck = dealerJoe.resetDeck();
+		cardDeck = dealerJoe.shuffleCards();
 		GameLogic.makeDealer(gamePlayers[dealerIndex++]);
 		GameLogic.determineSmallBig(gamePlayers);
+		System.out.println("Dealing new hand");
 		dealHoleCards();
 		startAntiing();
 		dealFlop();
@@ -42,6 +63,10 @@ public class Table {
 		flopBet();
 		dealTurn();
 		turnBet();
+		showTable();
+		GameLogic.determineWinner(gamePlayers);
+		if (continuePlaying == true)
+		nextHand();
 	}
 	private void showTable() {
 		System.out.printf("Current total pot %s %n", totalPotVal);
@@ -59,35 +84,35 @@ public class Table {
 	}
 
 	public void startAntiing() {
-		GameLogic.takeBets(gamePlayers);
+		GameLogic.takePreflopBets(gamePlayers, smallBlind);
 	}
 	
 	public void dealFlop() {
 		Card [] flopCards = new Card[3];
-		flopCards = Dealer.dealFlop(cardDeck);
+		flopCards = dealerJoe.dealFlop();
 		for (int i = 0; i < flopCards.length; i++)
 			communityCards[i] = flopCards[i]; 
 	}
 	
 	public void flopBet() {
-		GameLogic.takeBets(gamePlayers);
+		GameLogic.takeBets(gamePlayers, smallBlind);
 	}
 
 	public void dealTurn() {
 		int TURN_CARD_INDEX = 3;
-		communityCards[TURN_CARD_INDEX] = Dealer.dealTurn(cardDeck);
+		communityCards[TURN_CARD_INDEX] = dealerJoe.dealTurn();
 	}
 	
 	public void turnBet() {
-		GameLogic.takeBets(gamePlayers);
+		GameLogic.takeBets(gamePlayers, smallBlind);
 	}
 	
 	public void dealRiver() {
 		int RIVER_CARD_INDEX = 4;
-		communityCards[RIVER_CARD_INDEX] = Dealer.dealRiver(cardDeck);
+		communityCards[RIVER_CARD_INDEX] = dealerJoe.dealRiver();
 	}
 	public void riverBet() {
-		GameLogic.takeBets(gamePlayers);
+		GameLogic.takeBets(gamePlayers, smallBlind);
 	}
 	
 	public void createPlayers() {
@@ -126,9 +151,9 @@ public class Table {
 		//deal hole cardDeck to each plyer
 		/* int playersDealt = 0; */
 		for (int i = 0; i < playerCount; i++) {
-			String tempCard = Dealer.dealCard(cardDeck).toString();
+			String tempCard = dealerJoe.dealCard().toString();
 			gamePlayers[i].setHoleCards(tempCard);
-			tempCard = Dealer.dealCard(cardDeck).toString();
+			tempCard = dealerJoe.dealCard().toString();
 			gamePlayers[i].setHoleCards(tempCard);
 		}
 		//System.out.println(gamePlayers[0].getHoleCards());

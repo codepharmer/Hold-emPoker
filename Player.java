@@ -1,15 +1,15 @@
-package Poker_game;
+package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class Player {
 	
-	private final int DEFAULT_CHIP_COUNT = 1200;
+	private final int DEFAULT_CHIP_COUNT = 120;
 	private int chipCount = 0;
 	boolean human = false;
 	boolean dealer = false;
 	boolean small = false;
 	boolean big = false;
 	boolean folded = false;
-	String playerName = "player ";
+	String playerName = "player";
 	char currentMove = '\0';
 	private Vector<String> holeCards = new Vector<String>();
 	
@@ -47,7 +47,11 @@ public class Player {
 		holeCards = holeCardsIn;
 	}
 	
-	public void updateChipCount(int chipCountIn) {
+	public void betChips(int betAmount) {
+		chipCount -= betAmount;
+	}
+	
+	public void setChipCount(int chipCountIn) {
 		chipCount = chipCountIn;
 	}
 	
@@ -73,8 +77,8 @@ public class Player {
 		dealer = true;
 	}
 	
-	public void foldPlayer() {
-		folded = true;
+	public void setFold(boolean toFoldOrNotTOFold) {
+		folded = toFoldOrNotTOFold;
 	}
 	
 	public boolean isBig() {
