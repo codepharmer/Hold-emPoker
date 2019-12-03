@@ -1,7 +1,8 @@
 package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class Table {
-	public static CardDeck cardDeck = new CardDeck();
+	public static Vector<BettingPot> chipPots;
+	private CardDeck cardDeck = new CardDeck();
 	private Dealer dealerJoe;
 	private static final int DEFAULT_PLAYER_COUNT = 4;
 	private static final int MAX_COMMUNITY_CARDS = 5;
@@ -9,18 +10,17 @@ public class Table {
 	public static int playerCount = DEFAULT_PLAYER_COUNT;
 	public static Card [] communityCards = new Card[MAX_COMMUNITY_CARDS];
 	private Player [] gamePlayers = new Player [0];
-	private static int dealerIndex = 0;
+	private int dealerIndex = 0;
 	private int totalPotVal = 0;
 	private final int DEFAULT_SMALL_BLIND = 2;
 	private int smallBlind = DEFAULT_SMALL_BLIND;
 	private int bigBlind = 2 * smallBlind;
-	boolean continuePlaying = false;
-	
+	private GameLogic gl = new GameLogic();
 	public Table(){
 		setPlayerCount(DEFAULT_PLAYER_COUNT);
 		createPlayers();
 		dealerJoe = new Dealer(cardDeck);
-		dealerIndex = GameLogic.determineDealer(gamePlayers);
+		dealerIndex = gl.determineDealer(gamePlayers);
 		startGame();
 	}
 	
@@ -28,7 +28,7 @@ public class Table {
 		setPlayerCount(playerCountIn);
 		createPlayers();
 		dealerJoe = new Dealer(cardDeck);
-		dealerIndex = GameLogic.determineDealer(gamePlayers);
+		dealerIndex = gl.determineDealer(gamePlayers);
 		startGame();
 	}
 	public int getSmallBlind() {
@@ -43,29 +43,37 @@ public class Table {
 		return bigBlind;
 	}
 
-	public void setBigBlind(int bigBlind) {
+	public void setBigAnti(int bigBlind) {
 		this.bigBlind = bigBlind;
+		gl.setBigBlind(bigBlind);
 	}
 
 	private void startGame() {
 		nextHand();
 	}
 	public void nextHand() {
+		gl.resetChipPots(gamePlayers);
 		cardDeck = dealerJoe.resetDeck();
 		cardDeck = dealerJoe.shuffleCards();
-		GameLogic.makeDealer(gamePlayers[dealerIndex++]);
-		GameLogic.determineSmallBig(gamePlayers);
+		gl.makeDealer(gamePlayers[dealerIndex++]);
+		gl.determineSmallBig(gamePlayers);
+		setBigAnti(bigBlind);
 		System.out.println("Dealing new hand");
 		dealHoleCards();
-		startAntiing();
+		totalPotVal += startAntiing();
 		dealFlop();
+		totalPotVal += flopBet();
 		showTable();
-		flopBet();
 		dealTurn();
-		turnBet();
+		totalPotVal += turnBet();
 		showTable();
-		GameLogic.determineWinner(gamePlayers);
-		if (continuePlaying == true)
+		dealRiver();
+		totalPotVal += riverBet();
+		showTable();
+		System.out.println(
+				gl.determineWinner(gamePlayers));
+		boolean continuePlaying = dealerJoe.nextHandPrompt();
+		if (continuePlaying)
 		nextHand();
 	}
 	private void showTable() {
@@ -83,8 +91,8 @@ public class Table {
 		System.out.printf("Community cards: %s %n", printCards);
 	}
 
-	public void startAntiing() {
-		GameLogic.takePreflopBets(gamePlayers, smallBlind);
+	public int startAntiing() {
+		return gl.takePreflopBets(gamePlayers);
 	}
 	
 	public void dealFlop() {
@@ -94,8 +102,8 @@ public class Table {
 			communityCards[i] = flopCards[i]; 
 	}
 	
-	public void flopBet() {
-		GameLogic.takeBets(gamePlayers, smallBlind);
+	public int flopBet() {
+		return gl.takeBets(gamePlayers);
 	}
 
 	public void dealTurn() {
@@ -103,16 +111,17 @@ public class Table {
 		communityCards[TURN_CARD_INDEX] = dealerJoe.dealTurn();
 	}
 	
-	public void turnBet() {
-		GameLogic.takeBets(gamePlayers, smallBlind);
+	public int turnBet() {
+		return gl.takeBets(gamePlayers);
 	}
 	
 	public void dealRiver() {
 		int RIVER_CARD_INDEX = 4;
 		communityCards[RIVER_CARD_INDEX] = dealerJoe.dealRiver();
 	}
-	public void riverBet() {
-		GameLogic.takeBets(gamePlayers, smallBlind);
+	
+	public int riverBet() {
+		return gl.takeBets(gamePlayers);
 	}
 	
 	public void createPlayers() {

@@ -52,4 +52,13 @@ public class Dealer {
 	public Card dealRiver() {
 		return dealCard();
 	}
+
+	public boolean nextHandPrompt() {
+		System.out.println("Continue playing? Type yes or 'y' for yes");
+		Scanner scanner = new Scanner(System.in);
+		String userInput = scanner.nextLine();
+		if (userInput.contains("yes") || userInput.contains("y"))
+			return true;
+		else return false;
+	}
 }

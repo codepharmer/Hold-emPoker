@@ -4,8 +4,6 @@ import java.util.*;
 public class game_main_class {
 	
 	public game_main_class() {
-		
-		
 	}
 	
 	public static void main(String [] args) {
@@ -23,12 +21,14 @@ public class game_main_class {
 		/*
 		 * 
 		 * 
+		 * 
 		 * gameTable.set(); gameTable.dealHands(); gameTable.dealFlop();
 		 * gameTable.dealTurn(); gameTable.dealRiver();
 		 */
-	}
+		  }
 }
 }
+
 
 
  

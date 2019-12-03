@@ -4,13 +4,14 @@ public class Player {
 	
 	private final int DEFAULT_CHIP_COUNT = 120;
 	private int chipCount = 0;
+	private int totalHandBets = 0;
 	boolean human = false;
 	boolean dealer = false;
 	boolean small = false;
 	boolean big = false;
 	boolean folded = false;
 	String playerName = "player";
-	char currentMove = '\0';
+	char currentMove;
 	private Vector<String> holeCards = new Vector<String>();
 	
 	
@@ -49,6 +50,7 @@ public class Player {
 	
 	public void betChips(int betAmount) {
 		chipCount -= betAmount;
+		totalHandBets += betAmount;
 	}
 	
 	public void setChipCount(int chipCountIn) {
@@ -112,6 +114,12 @@ public class Player {
 	public String getName() {
 		// TODO Auto-generated method stub
 		return playerName;
+	}
+	public int getTotalHandBets() {
+		return totalHandBets;
+	}
+	public void setTotalHandBets(int totalHandBets) {
+		this.totalHandBets = totalHandBets;
 	}
 	}
 
