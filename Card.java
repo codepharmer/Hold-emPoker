@@ -6,6 +6,12 @@ public class Card{
 	private int value = 0;
 	private String suite = "";
 	private String cardName;
+	
+	//public Card(){
+		//cardNum = Randomizer.random(52);
+		//assignVal();
+	///	assignSuite();
+	//}
 	public Card(Integer cardNumIn){
 		cardNum = cardNumIn.intValue();
 		assignVal();

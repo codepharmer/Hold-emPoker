@@ -1,7 +1,7 @@
 package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class Table {
-	public static Vector<BettingPot> chipPots;
+	public static Vector<BettingPot> chipPots = new Vector<>();
 	private CardDeck cardDeck = new CardDeck();
 	private Dealer dealerJoe;
 	private static final int DEFAULT_PLAYER_COUNT = 4;
@@ -52,6 +52,7 @@ public class Table {
 		nextHand();
 	}
 	public void nextHand() {
+		//when dealing cards, we need to add it to community cards!
 		gl.resetChipPots(gamePlayers);
 		cardDeck = dealerJoe.resetDeck();
 		cardDeck = dealerJoe.shuffleCards();
@@ -60,15 +61,23 @@ public class Table {
 		setBigAnti(bigBlind);
 		System.out.println("Dealing new hand");
 		dealHoleCards();
+		showPlyrCards();
 		totalPotVal += startAntiing();
+		System.out.println("Dealing flop");
 		dealFlop();
+		showTable();
 		totalPotVal += flopBet();
-		showTable();
+		showPlyrCards();
+		System.out.println("Dealing turn");
 		dealTurn();
-		totalPotVal += turnBet();
 		showTable();
+		totalPotVal += turnBet();
+		showPlyrCards();
+		System.out.println("Dealing river");
 		dealRiver();
+		showTable();
 		totalPotVal += riverBet();
+		showPlyrCards();
 		showTable();
 		System.out.println(
 				gl.determineWinner(gamePlayers));
@@ -76,6 +85,11 @@ public class Table {
 		if (continuePlaying)
 		nextHand();
 	}
+	private void showPlyrCards() {
+		Vector<String> holeCards = gamePlayers[HUMAN_PLAYER_INDEX].getHoleCards();
+		System.out.printf("Your cards: %s, %s %n", holeCards.get(0), holeCards.get(1));
+	}
+
 	private void showTable() {
 		System.out.printf("Current total pot %s %n", totalPotVal);
 		printCommunityCards();

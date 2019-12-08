@@ -115,6 +115,7 @@ public class Player {
 		// TODO Auto-generated method stub
 		return playerName;
 	}
+	
 	public int getTotalHandBets() {
 		return totalHandBets;
 	}
