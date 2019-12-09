@@ -12,7 +12,9 @@ public class Player {
 	boolean folded = false;
 	String playerName = "player";
 	char currentMove;
+	Card [] currBestHand = new Card[5];
 	private Vector<String> holeCards = new Vector<String>();
+	private Vector<Card> playerCards = new Vector<Card>();
 	
 	
 	public Player(){
@@ -38,14 +40,28 @@ public class Player {
 	public void setHoleCards(String holeCardsIn) {
 		holeCards.add(holeCardsIn);
 	}
+	
 	public Vector<String> getHoleCards() {
 		//returns stack of two cards
 		return holeCards;
 	}
 	
-	public void setBestFive(Vector<String> holeCardsIn) {
-		//set est five cards 
-		holeCards = holeCardsIn;
+	public void setPlayerCards(Card holeCardsIn) {
+		playerCards .add(holeCardsIn);
+	}
+	
+	public Vector<Card> getPlayerCards() {
+		return playerCards;
+	}
+	public void setCurrBestHand(Card [] currHand) {
+		for( int i = 0; i < currHand.length; i++) {
+			
+		}
+	}
+	
+	public Card [] getCurrBestHand() {
+		//set est five cards
+		return currBestHand;
 	}
 	
 	public void betChips(int betAmount) {
@@ -110,6 +126,9 @@ public class Player {
 	public void setName(int i) {
 		Integer index = i;
 		playerName += index.toString();
+	}
+	public void setName(String name) {
+		playerName = name;
 	}
 	public String getName() {
 		// TODO Auto-generated method stub

@@ -4,6 +4,7 @@ public class Table {
 	public static Vector<BettingPot> chipPots = new Vector<>();
 	private CardDeck cardDeck = new CardDeck();
 	private Dealer dealerJoe;
+	private static final int MAX_PLAYERS_IN_GAME = 10;
 	private static final int DEFAULT_PLAYER_COUNT = 4;
 	private static final int MAX_COMMUNITY_CARDS = 5;
 	private static final int HUMAN_PLAYER_INDEX = 2;
@@ -21,14 +22,22 @@ public class Table {
 		createPlayers();
 		dealerJoe = new Dealer(cardDeck);
 		dealerIndex = gl.determineDealer(gamePlayers);
+		gamePlayers[HUMAN_PLAYER_INDEX].setName("You");
 		startGame();
 	}
 	
 	public Table(int playerCountIn){
+		if ( playerCountIn > MAX_PLAYERS_IN_GAME
+				|| playerCountIn < 2) {
+			System.out.println("Invalid number. \n"
+					+ "Starting game with default number for players, 4 players.");
+		}
+			
 		setPlayerCount(playerCountIn);
 		createPlayers();
 		dealerJoe = new Dealer(cardDeck);
 		dealerIndex = gl.determineDealer(gamePlayers);
+		gamePlayers[HUMAN_PLAYER_INDEX].setName("You");
 		startGame();
 	}
 	public int getSmallBlind() {
@@ -60,6 +69,7 @@ public class Table {
 		gl.determineSmallBig(gamePlayers);
 		setBigAnti(bigBlind);
 		System.out.println("Dealing new hand");
+		dealerJoe.printSmallBig(gamePlayers);
 		dealHoleCards();
 		showPlyrCards();
 		totalPotVal += startAntiing();
@@ -80,10 +90,10 @@ public class Table {
 		showPlyrCards();
 		showTable();
 		System.out.println(
-				gl.determineWinner(gamePlayers));
+				gl.determineWinner(gamePlayers, communityCards));
 		boolean continuePlaying = dealerJoe.nextHandPrompt();
 		if (continuePlaying)
-		nextHand();
+			nextHand();
 	}
 	private void showPlyrCards() {
 		Vector<String> holeCards = gamePlayers[HUMAN_PLAYER_INDEX].getHoleCards();
@@ -101,7 +111,7 @@ public class Table {
 		String printCards = "";
 		for (Card c : communityCards)
 			if (c != null)
-			printCards += c + " -- ";
+				printCards += c + " -- ";
 		System.out.printf("Community cards: %s %n", printCards);
 	}
 
@@ -141,7 +151,7 @@ public class Table {
 	public void createPlayers() {
 		 gamePlayers = new Player[getPlayerCount()];
 		 for (int i = 0; i < playerCount; i++) {
-		 gamePlayers[i] = new Player(i);
+			 gamePlayers[i] = new Player(i);
 		 if (i == HUMAN_PLAYER_INDEX)
 			 gamePlayers[i].setHuman();
 		 }
@@ -174,10 +184,14 @@ public class Table {
 		//deal hole cardDeck to each plyer
 		/* int playersDealt = 0; */
 		for (int i = 0; i < playerCount; i++) {
-			String tempCard = dealerJoe.dealCard().toString();
-			gamePlayers[i].setHoleCards(tempCard);
-			tempCard = dealerJoe.dealCard().toString();
-			gamePlayers[i].setHoleCards(tempCard);
+			String stringCard = dealerJoe.dealCard().toString();
+			Card card = dealerJoe.dealCard();
+			gamePlayers[i].setHoleCards(stringCard);
+			gamePlayers[i].setPlayerCards(card);
+			stringCard = dealerJoe.dealCard().toString();
+			card = dealerJoe.dealCard();
+			gamePlayers[i].setHoleCards(stringCard);
+			gamePlayers[i].setPlayerCards(card);
 		}
 		//System.out.println(gamePlayers[0].getHoleCards());
 	}

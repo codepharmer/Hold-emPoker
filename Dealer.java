@@ -25,6 +25,19 @@ public class Dealer {
 		return card;
 	}
 	
+	public void printSmallBig(Player [] players) {
+		int smallBlindIndex = -2;
+
+		int n = 0;
+		while (smallBlindIndex == -2)
+			if (players[n % players.length].isSmall() && !players[n % players.length].isFolded())
+				smallBlindIndex = (n % players.length);
+			else
+				n++;
+		System.out.printf("Small blind is player %s %n Big blind is player %s %n",
+				players[smallBlindIndex].getName(), players[(smallBlindIndex + 1) % players.length].getName());;
+	}
+	
 	public CardDeck shuffleCards() {
 		Collections.shuffle(cardDeck.getDeck());
 		return cardDeck;

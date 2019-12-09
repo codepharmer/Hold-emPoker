@@ -1,7 +1,7 @@
 package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 
-public class Card{
+public class Card implements Comparable<Card>{
 	private int cardNum;
 	private int value = 0;
 	private String suite = "";
@@ -49,16 +49,20 @@ public class Card{
 	private void assignSuite() {
 		if(cardNum < 26)
 			if(cardNum < 13) 
-			suite += " of Clubs";
+			suite = " of Clubs";
 		else
-			suite += " of Hearts";
+			suite = " of Hearts";
 		else if(cardNum < 39)
-			suite += " of Spades";
+			suite = " of Spades";
 		else
-			suite += " of Diamonds";
+			suite = " of Diamonds";
 	}
 	public String value(){
 		return cardName;
+	}
+	
+	public int intValue() {
+		return value;
 	}
 	
 	@Override
@@ -68,5 +72,10 @@ public class Card{
 	public String suite(){
 		return suite;
 	}
+	@Override
+	public int compareTo(Card otherCard) {
+		Integer last = new Integer(this.value).compareTo(new Integer(otherCard.value));
+        return last == 0 ? this.suite.compareTo(otherCard.suite) : last;
+	}
 	
-}
+	}

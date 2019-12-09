@@ -11,6 +11,7 @@ public class GameLogic {
 	private static int totalChipsBet = 0;
 	private static boolean betHasBeenMadeThisRound = false;
 	private Vector<Integer> betsMade = new Vector<Integer>();
+	Card [] cardArrForDetermineHandMethod = new Card[7];
 
 	public GameLogic() {
 	}
@@ -21,7 +22,7 @@ public class GameLogic {
 		resetPlayerProps(gamePlayers);
 		int smallBlind = bigBlind / 2;
 		biggestBet = bigBlind;
-		System.out.println(this.biggestBet);
+		//System.out.println(this.biggestBet);
 		int i = getSmallIndex(gamePlayers);
 		// when playing heads up (two players), we don't want to take a small
 		// and big blind from one player so we need to check that that the small blind
@@ -103,8 +104,14 @@ public class GameLogic {
 
 			while (betAmount < 2 * biggestBet && player.getChipCount() >= (2 * biggestBet)
 					|| betAmount > player.getChipCount()) {
+				if(biggestBet > 0) {
 				System.out.printf("How much would you like to raise?" + 
 					"It must be eat least double %d. %n", biggestBet);
+				}
+				else {
+					System.out.printf("How much would you like to raise?" + 
+							"It must be eat least %d. %n", bigBlind);
+				}
 				if (betAmount > player.getChipCount())
 					System.out.printf(
 							"%d is more than your total chip count of %d"
@@ -112,7 +119,7 @@ public class GameLogic {
 							betAmount, player.getChipCount(), betAmount, player.getChipCount());
 				String userInput = scanner.nextLine();
 				betAmount = Integer.parseInt(userInput);
-				System.out.println("Parsed integr input");
+				//System.out.println("Parsed integr input");
 			}
 
 			player.betChips(betAmount);
@@ -188,7 +195,7 @@ public class GameLogic {
 				String userInput = scanner.nextLine();
 				if (userInput != "")
 					playerMove = userInput.charAt(0);
-				System.out.println("input val is" + (int) playerMove);
+				//System.out.println("input val is" + (int) playerMove);
 				if (playerMove == 'c' || playerMove == 'r' || playerMove == 'f' || playerMove == 't')
 					validInput = true;
 			} while (!validInput);
@@ -198,7 +205,7 @@ public class GameLogic {
 			 */
 		} else {
 			char enter = (char) ASCII_ENTER_VAL;
-			player.setCurrentMove('t');
+			player.setCurrentMove('c');
 		}
 		if (player.getCurrentMove() == 'f')
 			player.setFold(true);
@@ -206,7 +213,8 @@ public class GameLogic {
 
 	private String determinePlayerOptions(Player player) {
 		// if( player.getChipCount() > biggestBet * 2 &&)
-		return "Please hit 'c', 'r', or 'f' to call, raise, or fold" + "or 't' to tap the table to check.";
+		return "Please hit 'c', 'r', or 'f' to call, raise, or fold"
+				+ " or 't' to tap the table to check.";
 	}
 
 	public void determineSmallBig(Player[] players) {
@@ -224,8 +232,11 @@ public class GameLogic {
 		player.makeDealer();
 	}
 
-	public String determineWinner(Player[] gamePlayers) {
-		return "Great hand! The winner is sdfklj";
+	public String determineWinner(Player[] gamePlayers, Card [] communityCards) {
+		Player playerWithBestHand = findPlayerWithBestHand(gamePlayers, communityCards);
+		String playerHand = playerWithBestHand.getCurrBestHand().toString();
+		return ("Winner is player " + playerWithBestHand.getName() 
+				+ "With a" + playerWithBestHand.currBestHand.toString() +"\n");
 	}
 
 	public void setBigBlind(int bigBlindIn) {
@@ -270,7 +281,7 @@ public class GameLogic {
 				}
 			}
 				Table.chipPots.add(new BettingPot(0, playersInPot, i));
-				System.out.printf("Adding pot with %d maxBet playersInvloned are %s %n", i, playersInPot.toString());
+				System.out.printf("Adding pot with %d maxBet playersInvolved are %s %n", i, playersInPot.toString());
 			
 		}
 	}
@@ -293,13 +304,32 @@ public class GameLogic {
 	}
 
 	private Player findPlayerWithBestHand(Player[] players, Card[] communityCards) {
-		//Integer [] playerCards = communityCards;
+		int numHoleCards = 2;
+		 
 		//communityCards += playerCards
-		//for (Player p : players) {
+		for (Player p : players) {
+			for(int i = 0; i< numHoleCards; i++) {
+				 cardArrForDetermineHandMethod[i] =
+				 p.getPlayerCards().get(i);
+			}
+			for (int i = 0; i < 
+					(communityCards.length ); i++) {
+				cardArrForDetermineHandMethod[i + numHoleCards] = 
+						communityCards[i];
+			}
+			// something like this:
+			//p.setCurrBestHand(CardALdetbesthad[cardArrForDetermineHandMethod]);
+			
+			
+		//	for( Card c : cardArrForDetermineHandMethod)
+		//		System.out.println(c.toString());
+		//		System.out.println();
 			//String playerHand = DetHand(communityCards);
 			//p.setBestHand(playerHand);
-		//}
-		return null;
+			cardArrForDetermineHandMethod = new Card[7];
+		}
+		
+		return new Player();
 	}
 	
 	private Player findThisPlayer(Player[] players, String plyrName) {
