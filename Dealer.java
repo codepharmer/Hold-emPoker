@@ -34,10 +34,20 @@ public class Dealer {
 				smallBlindIndex = (n % players.length);
 			else
 				n++;
-		System.out.printf("Small blind is player %s %n Big blind is player %s %n",
+		System.out.printf("Small blind is %s %nBig blind is %s %n",
 				players[smallBlindIndex].getName(), players[(smallBlindIndex + 1) % players.length].getName());;
 	}
 	
+	public static Card [] makeHand(int  c1, int c2, int c3,int c4, int c5) {
+		
+		Card a = new Card(c1);
+		Card b = new Card(c2);
+		Card c = new Card(c3);
+		Card d = new Card(c4);
+		Card e = new Card(c5);
+		Card[] cardHand = {a,b,c,d,e};
+		return cardHand;
+	}
 	public CardDeck shuffleCards() {
 		Collections.shuffle(cardDeck.getDeck());
 		return cardDeck;

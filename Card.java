@@ -1,3 +1,7 @@
+/**
+ * @author Nosson Weissman
+ * 
+ */
 package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 
@@ -62,6 +66,10 @@ public class Card implements Comparable<Card>{
 	}
 	
 	public int intValue() {
+		return value;
+	}
+	
+	public int val() {
 		return value;
 	}
 	

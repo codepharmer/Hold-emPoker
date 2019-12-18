@@ -131,16 +131,16 @@ public class GUI {
 			gameOver();
 		}
 		
-		for(Player player : currPlayers){
+		for(Player player : currTable.getGamePlayers()){
 			balanceLabel.setText("Balance: $" + centsToDollars(player.getChipCount()));
 		}
 		
 //		tablePanel.setLayout(new GridBagLayout());
 		
 		JPanel cardPanel = new JPanel();
-		for(Player player : currTable.createPlayers()){
-			cardPanel.add(iconizeCard(Player.getHoleCards()));
-			cardPanel.add(iconizeCard(Player.getHoleCards()));
+		for(Player player : currTable.getGamePlayers()){
+			cardPanel.add(iconizeCard(player.getHoleCards()));
+			//cardPanel.add(iconizeCard(player.getHoleCards()));
 		}
 		
 		cardPanel.validate();
@@ -165,7 +165,7 @@ public class GUI {
 
 	
 	private static final Vector<String> makeSinglePlayerHand(Player p) {
-		return Player.getHoleCards();
+		return p.getHoleCards();
 	}
 
 	// method that creates an entire table

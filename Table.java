@@ -65,36 +65,56 @@ public class Table {
 		gl.resetChipPots(gamePlayers);
 		cardDeck = dealerJoe.resetDeck();
 		cardDeck = dealerJoe.shuffleCards();
-		gl.makeDealer(gamePlayers[dealerIndex++]);
+		gl.makeDealer(gamePlayers[dealerIndex++ % gamePlayers.length]);
 		gl.determineSmallBig(gamePlayers);
 		setBigAnti(bigBlind);
 		System.out.println("Dealing new hand");
 		dealerJoe.printSmallBig(gamePlayers);
 		dealHoleCards();
+		gl.setPlayerHands(gamePlayers, communityCards);
 		showPlyrCards();
-		totalPotVal += startAntiing();
+		startAntiing();
+		updatePotVal();
 		System.out.println("Dealing flop");
 		dealFlop();
+		gl.setPlayerHands(gamePlayers, communityCards);
 		showTable();
-		totalPotVal += flopBet();
+		flopBet();
+		updatePotVal();
 		showPlyrCards();
 		System.out.println("Dealing turn");
 		dealTurn();
+		gl.setPlayerHands(gamePlayers, communityCards);
 		showTable();
-		totalPotVal += turnBet();
+		turnBet();
+		updatePotVal();
 		showPlyrCards();
 		System.out.println("Dealing river");
 		dealRiver();
+		gl.setPlayerHands(gamePlayers, communityCards);
 		showTable();
-		totalPotVal += riverBet();
+		riverBet();
+		updatePotVal();
 		showPlyrCards();
-		showTable();
+		gl.awardWinners(gamePlayers);
 		System.out.println(
 				gl.determineWinner(gamePlayers, communityCards));
+		showTable();
 		boolean continuePlaying = dealerJoe.nextHandPrompt();
 		if (continuePlaying)
 			nextHand();
+		else
+			endGame();
 	}
+	private void updatePotVal() {
+		totalPotVal = gl.updatePotVal(gamePlayers);
+	}
+
+	private void endGame() {
+		System.out.println("Thanks for playing holdem poker!");
+		
+	}
+
 	private void showPlyrCards() {
 		Vector<String> holeCards = gamePlayers[HUMAN_PLAYER_INDEX].getHoleCards();
 		System.out.printf("Your cards: %s, %s %n", holeCards.get(0), holeCards.get(1));
@@ -104,7 +124,9 @@ public class Table {
 		System.out.printf("Current total pot %s %n", totalPotVal);
 		printCommunityCards();
 		for (Player p : gamePlayers)
-			System.out.printf("Chip count for %s %d %n", p.getName(), p.getChipCount());
+			System.out.printf("Chip count for %s %d %n", p.getName(),
+					p.getChipCount());
+		System.out.printf("Pot value: %d %n", totalPotVal);
 	}
 
 	private void printCommunityCards() {
@@ -200,10 +222,9 @@ public class Table {
 		System.out.println(cardDeck.peek());
 	}
 
-
-	
-
-
+	public Player [] getGamePlayers() {
+		return gamePlayers;
+	}
 	public void set() {
 		// TODO Auto-generated method stub
 	}

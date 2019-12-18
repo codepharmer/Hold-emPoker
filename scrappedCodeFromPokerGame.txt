@@ -1,0 +1,30 @@
+/*
+	 * private boolean sidePotIsNeeded(Player player) { return(player.getChipCount()
+	 * < biggestBet); }
+	 */
+	/*
+	 * private void addPot(Player playerToExclude) { int newPotVal =
+	 * determineNewPotVal(playerToExclude); Vector<String> newPotPlayers =
+	 * playersInNewPot(playerToExclude); removeExtraChipsFromMainPot(newPotVal -
+	 * playerToExclude.getChipCount()); Table.chipPots.add(new BettingPot(newPotVal,
+	 * newPotPlayers)); }
+	 */
+
+	/*
+	 * private void removeExtraChipsFromMainPot(int chipsToRemove) {
+	 * Table.chipPots.get(chipPots.size() -1).setchipCount(
+	 * Table.chipPots.get(chipPots.size() -1).getChipCount() - chipsToRemove); }
+	 */
+
+	/*
+	 * private int determineNewPotVal(Player playerToExclude) { return
+	 * playerToExclude.getChipCount() * (betsMade.size() + 1); }
+	 */
+
+	/*
+	 * private Vector playersInNewPot(Player playerToExclude) { Vector<String>
+	 * players = new Vector<String>(); for(String p:
+	 * Table.chipPots.get((chipPots.size() -1)).getPlayersInvolved()) { if (p !=
+	 * playerToExclude.getName()) players.add(p); } //BettingPot newPot = new
+	 * BettingPot('f',players); return players; }
+	 */

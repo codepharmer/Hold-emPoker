@@ -1,5 +1,4 @@
 package edu.cuny.csi.csc330.holdemPoker;
-
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -11,8 +10,8 @@ public class GameLogic {
 	private static int totalChipsBet = 0;
 	private static boolean betHasBeenMadeThisRound = false;
 	private Vector<Integer> betsMade = new Vector<Integer>();
-	Card [] cardArrForDetermineHandMethod = new Card[7];
-
+	private Card [] cardArrForDetermineHandMethod = new Card[7];
+	private static String winningHandStrength ="";
 	public GameLogic() {
 	}
 
@@ -23,20 +22,22 @@ public class GameLogic {
 		int smallBlind = bigBlind / 2;
 		biggestBet = bigBlind;
 		//System.out.println(this.biggestBet);
-		int i = getSmallIndex(gamePlayers);
+		int smallIndex = getSmallIndex(gamePlayers);
 		// when playing heads up (two players), we don't want to take a small
 		// and big blind from one player so we need to check that that the small blind
 		// isn't also the big blind
-		if (!gamePlayers[i].isBig()) {
-			gamePlayers[i].betChips(smallBlind);
-			gamePlayers[(i + 1) % numPlayers].betChips(bigBlind);
-			placeChips(gamePlayers[(i + 1) % numPlayers], bigBlind);
+		if (!gamePlayers[smallIndex].isBig()) {
+			gamePlayers[smallIndex].betChips(smallBlind);
+			placeChips(gamePlayers[smallIndex], smallBlind);
+			gamePlayers[(smallIndex + 1) % numPlayers].betChips(bigBlind);
+			placeChips(gamePlayers[(smallIndex + 1) % numPlayers], bigBlind);
 			totalChipsBet += bigBlind;
 		} else {
-			gamePlayers[i].betChips(bigBlind);
+			gamePlayers[smallIndex].betChips(bigBlind);
 		}
-		for (int j = 0; (j + i) % gamePlayers.length < gamePlayers.length - 1; j++) {
-			playerBet(gamePlayers[(j + i) % gamePlayers.length]);
+		for (int j = 0; (j + smallIndex) % gamePlayers.length < gamePlayers.length - 1; j++) {
+			playerBet(gamePlayers[(j + smallIndex) % gamePlayers.length]);
+			System.out.printf("plyer %d %n", ((j + smallIndex) % gamePlayers.length) );
 		}
 		biggestBet = 0;
 		//Table.chipPots.get(0).addChips(totalChipsBet);
@@ -47,7 +48,7 @@ public class GameLogic {
 		for (Player p : gamePlayers)
 			p.setFold(false);
 		for (Player p : gamePlayers)
-			p.setTotalHandBets(0);
+			p.setTotalChipsBet(0);
 	}
 
 	public int takeBets(Player[] gamePlayers) {
@@ -55,8 +56,12 @@ public class GameLogic {
 		int smallBlind = bigBlind / 2;
 		int firstToBet = getSmallIndex(gamePlayers);
 		for (int i = 0; (i + firstToBet) < gamePlayers.length; i++) {
-			if (!(gamePlayers[(firstToBet + i) % gamePlayers.length].isFolded()))
-			playerBet(gamePlayers[(firstToBet + i) % gamePlayers.length]);
+			if (!(gamePlayers[(firstToBet + i) % gamePlayers.length].isFolded())) {
+				Player currPlayer = gamePlayers[(firstToBet + i) % gamePlayers.length];
+				//System.out.printf("%s is still in this round so we'll be taking bets %n", 
+						currPlayer.getName();
+				playerBet(currPlayer);
+			}
 		}
 		// addChipsToPot(totalChipsBet);
 		return totalChipsBet;
@@ -131,57 +136,27 @@ public class GameLogic {
 
 	private void placeChips(Player player, int playerBet) {
 		boolean donePlacingChips = false;
-		System.out.printf("player bet %d %n", playerBet);
+		//System.out.printf("player bet %d %n", playerBet);
 		while (!donePlacingChips) {
 			for (BettingPot pot : Table.chipPots) {
-				System.out.printf("player bet %d %n", playerBet);
-				if (player.getTotalHandBets() + playerBet <= pot.getMaxBet()) {
+				System.out.printf("%s bet %d %n",player.getName(), playerBet);
+				if (player.getTotalChipsBet() + playerBet <= pot.getMaxBet()) {
 					pot.addChips(playerBet);
 					donePlacingChips = true;
-					System.out.printf("added %d chips to pot %d. %n", playerBet, 
+					System.out.printf("added %d chips to the pot. %n", playerBet, 
 							Table.chipPots.indexOf(pot));
 					break;
-				} else if (player.getTotalHandBets() + playerBet > pot.getMaxBet()) {
-					int addTheseChips = playerBet;
-					playerBet -= (pot.getMaxBet() - player.getTotalHandBets());
-					pot.addChips(addTheseChips);
+				} else if (player.getTotalChipsBet() + playerBet > pot.getMaxBet()) {
+							int addTheseChips = playerBet;
+							playerBet -= (pot.getMaxBet() - player.getTotalChipsBet());
+							pot.addChips(addTheseChips);
 				}
 
 			}
 		}
-		//System.out.println("Out of forloop");
 	}
 
-	/*
-	 * private boolean sidePotIsNeeded(Player player) { return(player.getChipCount()
-	 * < biggestBet); }
-	 */
-	/*
-	 * private void addPot(Player playerToExclude) { int newPotVal =
-	 * determineNewPotVal(playerToExclude); Vector<String> newPotPlayers =
-	 * playersInNewPot(playerToExclude); removeExtraChipsFromMainPot(newPotVal -
-	 * playerToExclude.getChipCount()); Table.chipPots.add(new BettingPot(newPotVal,
-	 * newPotPlayers)); }
-	 */
-
-	/*
-	 * private void removeExtraChipsFromMainPot(int chipsToRemove) {
-	 * Table.chipPots.get(chipPots.size() -1).setchipCount(
-	 * Table.chipPots.get(chipPots.size() -1).getChipCount() - chipsToRemove); }
-	 */
-
-	/*
-	 * private int determineNewPotVal(Player playerToExclude) { return
-	 * playerToExclude.getChipCount() * (betsMade.size() + 1); }
-	 */
-
-	/*
-	 * private Vector playersInNewPot(Player playerToExclude) { Vector<String>
-	 * players = new Vector<String>(); for(String p:
-	 * Table.chipPots.get((chipPots.size() -1)).getPlayersInvolved()) { if (p !=
-	 * playerToExclude.getName()) players.add(p); } //BettingPot newPot = new
-	 * BettingPot('f',players); return players; }
-	 */
+	
 
 	private void checkBetFold(Player player) {
 		char playerMove = '\0';
@@ -233,10 +208,19 @@ public class GameLogic {
 	}
 
 	public String determineWinner(Player[] gamePlayers, Card [] communityCards) {
-		Player playerWithBestHand = findPlayerWithBestHand(gamePlayers, communityCards);
-		String playerHand = playerWithBestHand.getCurrBestHand().toString();
-		return ("Winner is player " + playerWithBestHand.getName() 
-				+ "With a" + playerWithBestHand.currBestHand.toString() +"\n");
+		Vector<Player> winningPlayers = getPlayerWithBestHand(gamePlayers);
+		String playerHand = "";
+		Card[] tempCards = new Card[5];
+		//tempCards = winningPlayers.getCurrBestHand();
+		for(Card c: tempCards) {
+			//playerHand += c.toString();
+		//	playerHand += ", ";
+		}
+		String functionOutput = "Winner is " + winningPlayers.get(0).getName() 
+		+ "! With a hand of " + playerHand +"\n"
+		+  winningPlayers.get(0).getName()  +" has a "
+		+ DetHand.determineHand(winningPlayers.get(0).getCurrBestHand());
+		return functionOutput;
 	}
 
 	public void setBigBlind(int bigBlindIn) {
@@ -281,31 +265,38 @@ public class GameLogic {
 				}
 			}
 				Table.chipPots.add(new BettingPot(0, playersInPot, i));
-				System.out.printf("Adding pot with %d maxBet playersInvolved are %s %n", i, playersInPot.toString());
+				//System.out.printf("Adding pot with %d maxBet playersInvolved are %s %n", i, playersInPot.toString());
 			
 		}
 	}
 
-	public void returnBetsToWinners(Player[] players, Card[] communityCards) {
+	public void awardWinners(Player[] players) {
 		// access pots array (vector)
+		//for each pot we'l award the chips to the player with the best hand
 		for (BettingPot pot : Table.chipPots) {
 			Player[] playersInPot = new Player[MAX_PLAYERS_IN_GAME];
-
 			// check players involved and compare their hands
 			int i = 0;
 			for (String plyrName : pot.getPlayersInvolved()) {
-				// for(int i = 0; i < pot.getPlayersInvolved().size(); i++) {
-				playersInPot[i++] = findThisPlayer(players, plyrName);
+				playersInPot[i++] = fetchPlayer(players, plyrName);
+			}
+			updateStrongestHand(players);
+			Vector<Player> winningPlayers = new Vector<>();
+			winningPlayers = getPlayerWithBestHand(players);
+			int howManyWinners = winningPlayers.size();
+			for(Player p : winningPlayers) {
+				if(howManyWinners == 0)
+					System.out.println("Error in awardWinners");
+				else {
+					p.addChips(pot.getChipCount() / howManyWinners);
+				}
 			}
 		}
-		// players in each pot with best hands earn the chips from that pot
-		Player playerWithBestHand = findPlayerWithBestHand(players, communityCards);
-		//
+		Table.chipPots.clear();
 	}
 
-	private Player findPlayerWithBestHand(Player[] players, Card[] communityCards) {
+	public void setPlayerHands(Player[] players, Card[] communityCards) {
 		int numHoleCards = 2;
-		 
 		//communityCards += playerCards
 		for (Player p : players) {
 			for(int i = 0; i< numHoleCards; i++) {
@@ -318,9 +309,9 @@ public class GameLogic {
 						communityCards[i];
 			}
 			// something like this:
-			//p.setCurrBestHand(CardALdetbesthad[cardArrForDetermineHandMethod]);
+			p.setCurrBestHand(DetHand.getBestHand(cardArrForDetermineHandMethod));
 			
-			
+			updateStrongestHand(players);
 		//	for( Card c : cardArrForDetermineHandMethod)
 		//		System.out.println(c.toString());
 		//		System.out.println();
@@ -328,11 +319,16 @@ public class GameLogic {
 			//p.setBestHand(playerHand);
 			cardArrForDetermineHandMethod = new Card[7];
 		}
-		
-		return new Player();
 	}
 	
-	private Player findThisPlayer(Player[] players, String plyrName) {
+	private void updateStrongestHand(Player[] players) {
+		Vector<String> compareHands = new Vector<>();
+		for(Player p : players)
+			compareHands.add(p.getHandStrength());
+		winningHandStrength = DetHand.compareHands(compareHands);
+	}
+
+	private Player fetchPlayer(Player[] players, String plyrName) {
 		for (Player p : players) {
 			if (p.getName() == plyrName)
 				return p;
@@ -340,6 +336,28 @@ public class GameLogic {
 		System.out.println("Error in findThisPlayer");
 		System.exit(1);
 		return new Player();
+	}
+	
+	private Vector<Player> getPlayerWithBestHand(Player [] players) {
+		// at this pont we assume that there are 5 cards in player.getBestHand()
+		// we return the player whose current best hand matches this hand
+		Vector<Player> winningPlayers = new Vector<>();
+		for (Player p : players) {
+			if (p.getHandStrength() == winningHandStrength)
+				winningPlayers.add(p);
+		}
+		Vector<Player> temp = new Vector<>();
+		temp.add(players[0]);
+		return temp;
+		//return winningPlayers;
+	}
+
+	public int updatePotVal(Player [] players) {
+		int potVal = 0;
+		for(Player p : players) {
+			potVal += p.getTotalChipsBet();
+		}
+		return potVal;
 	}
 
 }

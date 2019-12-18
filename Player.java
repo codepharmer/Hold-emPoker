@@ -1,3 +1,8 @@
+/**
+ * @author Nosson Weissman
+ * 
+ */
+
 package edu.cuny.csi.csc330.holdemPoker;
 import java.util.*;
 public class Player {
@@ -5,14 +10,15 @@ public class Player {
 	private final int DEFAULT_CHIP_COUNT = 120;
 	private int chipCount = 0;
 	private int totalHandBets = 0;
-	boolean human = false;
-	boolean dealer = false;
-	boolean small = false;
-	boolean big = false;
-	boolean folded = false;
-	String playerName = "player";
-	char currentMove;
-	Card [] currBestHand = new Card[5];
+	private boolean human = false;
+	private boolean dealer = false;
+	private boolean small = false;
+	private boolean big = false;
+	private boolean folded = false;
+	private String playerName = "player";
+	private char currentMove;
+	private Card [] currBestHand = new Card[5];
+	private String handStrength = "default-highCard2";
 	private Vector<String> holeCards = new Vector<String>();
 	private Vector<Card> playerCards = new Vector<Card>();
 	
@@ -21,11 +27,13 @@ public class Player {
 		setChipCount();
 		System.out.println("Creating player...\n");
 	}
+	
 	public Player(int index){
 		setName(index);
 		setChipCount();
 		System.out.println("Creating player...\n");
 	}
+	
 	public boolean isHuman() {
 		return human;
 	}
@@ -37,6 +45,7 @@ public class Player {
 	private void setChipCount() {
 		chipCount = DEFAULT_CHIP_COUNT;
 	}
+	
 	public void setHoleCards(String holeCardsIn) {
 		holeCards.add(holeCardsIn);
 	}
@@ -55,15 +64,17 @@ public class Player {
 	}
 	public void setCurrBestHand(Card [] currHand) {
 		for( int i = 0; i < currHand.length; i++) {
-			
+			currBestHand[i] = currHand[i];
 		}
 	}
 	
-	public Card [] getCurrBestHand() {
-		//set est five cards
+	public Card[] getCurrBestHand() {
 		return currBestHand;
 	}
 	
+	public void addChips(int chipsToAdd) {
+		chipCount += chipsToAdd;
+	}
 	public void betChips(int betAmount) {
 		chipCount -= betAmount;
 		totalHandBets += betAmount;
@@ -94,9 +105,13 @@ public class Player {
 	public void makeDealer() {
 		dealer = true;
 	}
-	
+
 	public void setFold(boolean toFoldOrNotTOFold) {
 		folded = toFoldOrNotTOFold;
+		if(folded) {
+			//holeCards = null;
+			currBestHand = null;
+		}
 	}
 	
 	public boolean isBig() {
@@ -135,11 +150,28 @@ public class Player {
 		return playerName;
 	}
 	
-	public int getTotalHandBets() {
+	public int getTotalChipsBet() {
 		return totalHandBets;
 	}
-	public void setTotalHandBets(int totalHandBets) {
+	public void setTotalChipsBet(int totalHandBets) {
 		this.totalHandBets = totalHandBets;
 	}
+	
+	@Override
+	public String toString() {
+		return "Player [DEFAULT_CHIP_COUNT=" + DEFAULT_CHIP_COUNT + ", chipCount=" + chipCount + ", totalHandBets="
+				+ totalHandBets + ", human=" + human + ", dealer=" + dealer + ", small=" + small + ", big=" + big
+				+ ", folded=" + folded + ", playerName=" + playerName + ", currentMove=" + currentMove
+				+ ", currBestHand=" + Arrays.toString(currBestHand) + ", holeCards=" + holeCards + ", playerCards="
+				+ playerCards + "]";
 	}
+
+	public String getHandStrength() {
+		return handStrength;
+	}
+
+	public void setHandStrength(String handStrength) {
+		this.handStrength = handStrength;
+	}
+}
 
